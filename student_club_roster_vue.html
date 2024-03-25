@@ -3,7 +3,7 @@
 <head>
     <title>Club Membership Vue</title>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>  <!-- Adds Vue.js src to file -->
 
     <style>
 
@@ -48,83 +48,60 @@
 
     <br>
 
-    <!-- Use v-on to call addNewStudent function. Complete the addNewStudent function in the script. -->
+    <!-- Use v-on to call addNewStudent function. -->
     <button v-on:click="addNewStudent" id="add-student">Add Student</button>
 
     <h2>Student List</h2>
 
     <p>There is/are
         <span v-bind="studentCount" id="student-count">
-        <!-- Create a computed property called studentCount and use it to display the student count here -->
+        <!-- Computed property called studentCount display the student count here -->
         {{studentCount}}
         </span>
         student(s) in the club.</p>
 
 
     <ul id="student-list">
-        <!-- use v-for to create li elements, one for each student -->
-        <li v-for="student in studentList" v-on:click="selectOrUnselectStudent(student)" v-bind:class="{ selected: student.selected }">
-            <!-- Modify this to display the student's data more neatly - display their name, ID and GPA. -->
-            <!-- for example "Beyonce Knowles, id: aa1234bb, GPA 3.8" -->
-            Name: {{ student.name }} Student Id: {{ student.studentId}} GPA: {{ student.studentGpa}}
+        <!-- v-for to create li elements, one for each student -->
+        <li v-for="student in studentList" v-on:click="selectOrUnselectStudent(student)" v-bind:class="{ selected: student.selected }">  <!-- click event handler calls selectOrUnselectStudent function.  Adds class-selected if selected. -->
+            Name: {{ student.name }} Student Id: {{ student.studentId}} GPA: {{ student.studentGpa}}  <!-- displays listed info -->
         </li>
     </ul>
 
-    <!-- Add a v-on to call removeSelectedStudents -->
+    <!-- v-on click event handler to call removeSelectedStudents function -->
     <button v-on:click="removeSelectedStudents" id="remove-selected-students">Remove selected students</button>
 
 </div>  <!-- end of div#app -->
 
 <script>
 
-    /* This app will store a list of student objects. Each student object should have this structure,
-
-    {name: 'Beyonce Knowles', id: 'aa1234bb', gpa: 3.8, selected: false}
-
-    Add the following functionality to this page
-
-        * Display the number of students in the student-count span. Keep this value up to date as students are added and removed, using a computed property.
-
-        * When the add student button is clicked
-            - Read the value from the student-name input, save in a variable. If the name is not entered, show an alert error message and return. (1pt)
-            - Read the value from the student-id input, save in a variable. If the id is not entered, show an alert error message and return. (1pt)
-            - Read the value from the student-gpa input, save in a variable. If the GPA is not entered, or is not in the range 0-4, show an alert error message and return.  (1pt)
-
-        * An event handler that toggles the selected value for a student object is provided for you.
-        * Each li element will use the appropriate class based on whether a student is selected or not.
-
-        * When the Remove selected students is clicked, remove all selected students.
-
-    */
-
-
     const { createApp, ref, computed } = Vue  // import these functions into the VueApp
 
     createApp({  // this creates the Vue app that manages the data on the page AND the HTML.  it will manage the data for the page, and all the HTML in the div #app.
         setup() {
 
-            // Create a new ref studentList. This will be an array. The array can be empty, or you can create an example student or students if you like.
+            // Create a new ref studentList. This is an array holding the 2 example objects listed below:
             const studentList = ref([
                 {name: 'A. Student', studentId: 'aa1234zz', studentGpa: '3.0'},
                 {name: 'B. Student', studentId: 'bb1234zz', studentGpa: '4.0'},
             ])
 
-            // Create a new ref newStudentName, initially an empty string
+            // Creates a new ref newStudentName, initially an empty string
             const newStudentName = ref('')
-            // Create a new ref newStudentId, initially an empty string
+            // Creates a new ref newStudentId, initially an empty string
             const newStudentID = ref('')
-            // Create a new ref newStudentGpa, initially an empty string
+            // Creates a new ref newStudentGpa, initially an empty string
             const newStudentGPA = ref('')
 
-            // Use this for form validation
+            // Creates an errors ref array, initially empty
             const errors = ref([])
 
-            // Create a computed property studentCount. This will set the value to the length of the student list.
+            // Creates a computed property studentCount. This is set to the length of the student list.
             const studentCount = computed( () => {
                 return studentList.value.length
             })
 
-            const addNewStudent = () => {
+            const addNewStudent = () => {  // defines addNewStudent function starts with error handling below:
 
                 errors.value = []
                 // Set the errors value to an empty array
@@ -146,12 +123,8 @@
                 else if (newStudentGPA.value > 4) {
                     errors.value.push('Student GPA must be between 0 - 4.0')
                 }
-                // Read the value from newStudentName. If it is empty, add an error message to the end of the errors ref.
-                // Read the value from newStudentId. If it is empty, add an error message to the end of the errors ref.
-                // Read the value from newStudentGPA. If it is empty, add an error message to the end of the errors ref.
-                //  And, check that newStudentGPA is between 0 and 4. If not, add an error message to the end of the errors ref.
 
-                // Check the length of errors. If it is more than 0, show an alert with the error message(s)
+                // Checks the length of errors array. If it is more than 0, displays an alert with the error messages.
                 if (errors.value.length > 0) {
                     alert(errors.value.join('\n'))
                 } else {
@@ -160,59 +133,35 @@
                         name: newStudentName.value,
                         studentId: newStudentID.value,
                         studentGpa: newStudentGPA.value,
+                        selected: false
                     }
 
-                    newStudent.selected = false
-                    studentList.value.push(newStudent)
+                    newStudent.selected = false  // sets newStudent.selected to boolean false
+                    studentList.value.push(newStudent)  // pushes newStudent object to studentList ref array.
 
-                    newStudentName.value = ''
+                    newStudentName.value = ''       // Sets the values of newStudentName, newStudentId, newStudentGpa to empty strings, to clear the form
                     newStudentID.value = ''
                     newStudentGPA.value = ''
-                    // Set name to newStudentName's value
-                    // Set id to newStudentId's value
-                    // Set gpa to newStudentGpa's value
-                    // Set selected to false
 
-                    // Add this new object to the end of studentList
-
-                    // Set the value of newStudentName, newStudentId, newStudentGpa to empty strings, to clear the form
                 }
             }
 
-            function removeSelectedStudents(studentToDelete){
-                if (studentList.selected === true){
-                    studentList.value = studentList.value.filter(student => student !== studentToDelete)
-                }
-
-                // let studentsToDelete = document.querySelectorAll('.selected')
-                // studentsToDelete.forEach(function (student){
-                //     student.remove()
-                // })
-                // numberOfStudents = document.getElementsByTagName('li').length
-                // student
+            function removeSelectedStudents() {  // defines the removeSelectedStudents function
+                studentList.value = studentList.value.filter(student => !student.selected)  // filter method to filter out unselected students and sets the studentList.value to these students that are left over
             }
-
-                //if (student.selected === true) {
-
-                // Remove all students with selected = true from the studentList. You can do this with filter,
-                // or you can make a new empty array, loop over the studentList, and copy all selected = false students
-                // to the new list, then replace the value of studentList with the new array
-
-
 
             const selectOrUnselectStudent = (student) => {
-                // This function is completed for you. If the selected property is true, it is changed to false.
+                // If the selected property is true, it is changed to false.
                 // if the selected property is false, it is changed to true.
                 student.selected = !student.selected
             }
 
 
-            return {
+            return {        // Returns all refs, functions and computed properties
                 studentList,
                 newStudentName,
                 newStudentID,
                 newStudentGPA,
-                // List all the refs and functions and computed properties
                 addNewStudent,
                 removeSelectedStudents,
                 selectOrUnselectStudent,
